@@ -1,0 +1,37 @@
+name: Run SVM Results
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.10
+
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install numpy scikit-learn wget
+
+    - name: Fetch precomputed dataset
+      run: |
+        mkdir -p data
+        wget -q \
+          https://raw.githubusercontent.com/iindyk/AdversarialVirusDetection/master/data/dataset.p \
+          -O data/dataset.p
+        wget -q \
+          https://raw.githubusercontent.com/iindyk/AdversarialVirusDetection/master/data/dictionary.txt \
+          -O data/dictionary.txt
+
+    - name: Run main.py
+      run: |
+        python main.py
